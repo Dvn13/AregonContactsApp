@@ -55,8 +55,6 @@ class LoginView extends StatelessWidget {
   }
 
   Scaffold buildScaffold(BuildContext context, LoginState state) {
-    emailController.text = "dvnmhmmt@gmail.com";
-    passwordController.text = "29_10_1346";
     return Scaffold(
       backgroundColor: ConstColor.background,
       body: SingleChildScrollView(
