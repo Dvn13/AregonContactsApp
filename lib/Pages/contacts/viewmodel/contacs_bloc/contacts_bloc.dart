@@ -72,11 +72,12 @@ class ContactsListBloc extends Bloc<ContactsListEvent, ContactsState> {
   }
 
   Future<void> deleteContact() async {
-    await contactsService.deleteContactData(
+   await contactsService.deleteContactData(
       email: userModel!.email ?? "",
       password: userModel!.sifre ?? "",
       kisiId: currentId,
     );
+ 
   }
 
   Future<void> fetchContacts() async {

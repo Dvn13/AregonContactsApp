@@ -28,4 +28,5 @@ class ConstText {
   static String city = "İl";
   static String town = "İlçe";
   static String nullGender = "Cinsiyet Yok";
+  static String networkError = "İnternet Bağlantısını Kontrol Edin.";
 }

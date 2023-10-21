@@ -36,13 +36,15 @@ dependencies:
 
   # Persistent storage
   shared_preferences: ^2.2.2
-  equatable: ^2.0.5
 
   # Image Picker
   image_picker: ^1.0.4
 
   # Toast Plugin
   fluttertoast: ^8.2.2
+
+  # Network Check
+  connectivity_plus: ^4.0.1
 
 
 

@@ -1,5 +1,6 @@
 import 'package:contacts_app/Helpers/constants/project.dart';
 import 'package:contacts_app/Helpers/constants/text.dart';
+import 'package:contacts_app/Helpers/manager/network/main_build.dart';
 import 'package:contacts_app/Pages/contacts/service/contacts_service.dart';
 import 'package:contacts_app/Pages/contacts/viewmodel/city_bloc/city_bloc.dart';
 import 'package:contacts_app/Pages/contacts/viewmodel/contacs_bloc/contacts_bloc.dart';
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: LoginView(),
+        builder: MainBuild.build,
       ),
     );
   }

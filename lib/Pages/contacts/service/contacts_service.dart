@@ -37,6 +37,8 @@ class ContactsService extends IContactsService {
       if (contacts != null) {
         return contacts;
       }
+    } else {
+      Toastr.show(response.error!.description.toString(), 5);
     }
 
     return null;
@@ -59,6 +61,8 @@ class ContactsService extends IContactsService {
       if (contacts != null) {
         return contacts;
       }
+    } else {
+      Toastr.show(response.error!.description.toString(), 5);
     }
 
     return null;
@@ -82,6 +86,7 @@ class ContactsService extends IContactsService {
         if (success == 1) {
           return city;
         } else {
+          Toastr.show(response.error!.description.toString(), 5);
           return null;
         }
       }
@@ -96,29 +101,24 @@ class ContactsService extends IContactsService {
 
   @override
   Future<List<Ilceler>?> fetchTown({int cityId = 0}) async {
-    try {
-      final response = await networkManager.send<TownModel, TownModel>(
-        NetworkRoute.town.rawValue,
-        parseModel: TownModel(),
-        method: RequestType.POST,
-        queryParameters: Map.fromEntries(NetworkQuery.townQery.town(cityId)),
-      );
+    final response = await networkManager.send<TownModel, TownModel>(
+      NetworkRoute.town.rawValue,
+      parseModel: TownModel(),
+      method: RequestType.POST,
+      queryParameters: Map.fromEntries(NetworkQuery.townQery.town(cityId)),
+    );
 
-      final data = response.data;
+    final data = response.data;
 
-      if (data != null) {
-        final city = data.ilceler;
-        final success = data.basari;
+    if (data != null) {
+      final city = data.ilceler;
+      final success = data.basari;
 
-        if (success == 1) {
-          return city;
-        } else {
-          return null;
-        }
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print("Error fetching city data: $e");
+      if (success == 1) {
+        return city;
+      } else {
+        Toastr.show(response.error!.description.toString(), 5);
+        return null;
       }
     }
 
@@ -141,35 +141,39 @@ class ContactsService extends IContactsService {
 
     formData.fields.add(MapEntry("sifre", sifre));
 
-    if (file != null) {
-      fileName = file.path.split('/').last;
-      formData.files.add(MapEntry(
-        "resim",
-        await MultipartFile.fromFile(file.path, filename: fileName),
-      ));
-    } else {
-      String path = "";
-      if (data.resim == null) {
-        path = ApplicationConstats.DEFAULT_IMAGE_URL + data.kisiAd.toString();
-        fileName = "default.jpg";
+    try {
+      if (file != null) {
+        fileName = file.path.split('/').last;
+        formData.files.add(MapEntry(
+          "resim",
+          await MultipartFile.fromFile(file.path, filename: fileName),
+        ));
       } else {
-        path = ApplicationConstats.CONTACTS_IMAGE_BASE_URL + data.resim!;
-        fileName = data.resim!;
-      }
-
-      final response =
-          await networkManager.downloadFileSimple(path, (count, total) {
-        if (kDebugMode) {
-          print('$count');
+        String path = "";
+        if (data.resim == null) {
+          path = ApplicationConstats.DEFAULT_IMAGE_URL + data.kisiAd.toString();
+          fileName = "default.jpg";
+        } else {
+          path = ApplicationConstats.CONTACTS_IMAGE_BASE_URL + data.resim!;
+          fileName = data.resim!;
         }
-      });
-      List<int> fileBytes = response.data!;
-      MultipartFile file = MultipartFile.fromBytes(
-        fileBytes,
-        filename: fileName,
-      );
 
-      formData.files.add(MapEntry("resim", file));
+        final response =
+            await networkManager.downloadFileSimple(path, (count, total) {
+          if (kDebugMode) {
+            print('$count');
+          }
+        });
+        List<int> fileBytes = response.data!;
+        MultipartFile file = MultipartFile.fromBytes(
+          fileBytes,
+          filename: fileName,
+        );
+
+        formData.files.add(MapEntry("resim", file));
+      }
+    } on DioException catch (e) {
+      Toastr.show(e.toString(), 5);
     }
 
     var response = await networkManager.uploadFile(
@@ -194,6 +198,9 @@ class ContactsService extends IContactsService {
     final stateModel = response.data;
     if (stateModel != null) {
       Toastr.show(stateModel.mesaj!, stateModel.durum!);
+      return stateModel;
+    } else {
+      Toastr.show(response.error!.description.toString(), 5);
     }
 
     return null;
